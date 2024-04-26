@@ -71,27 +71,23 @@ def get_value(cards:list) -> int:
 
 
 while money != 0:
-  player_bust = False
-  dealer_bust = False
-  player_blackjack = False
-  dealer_blackjack = False
-  hit = True
-  first_turn = True
+  player_bust = dealer_bust = player_blackjack = dealer_blackjack = False
+  player_turn = hit = first_turn = True
   
-  while True:
+  while True: #Get bet
     print(f"Money: ${money}")
     bet = input(f"Bet: ")
     try:
       bet = int(bet)
     except ValueError:
       continue
-      
+
     break
-      
+
+  #Game Set-Up
   deck.shuffle() #shuffle every hand
   player_cards, dealer_cards = deck.deal()
-  player_value = 0
-  dealer_value = 0
+  player_value = dealer_value = 0
 
   #Hitting Phase
   while True:
@@ -108,10 +104,11 @@ while money != 0:
     elif player_value == 21:
       break
     elif player_value > 21:
-      print("You went bust")
       player_bust = True
       break
       
+    if (not player_turn): #player turn is over
+      break
     
     choice = 0
 
@@ -130,11 +127,17 @@ while money != 0:
     first_turn = False
     if choice == 2:
       player_cards.append(deck.get_card())
-      break
+      bet *= 2
+      player_value = get_value(player_cards)
+      player_turn = False
+      continue
     elif choice == 0:
       player_cards.append(deck.get_card())
-    else:
-      break
+      player_value = get_value(player_cards)
+      continue
+    else: #stand
+      player_value = get_value(player_cards)
+      player_turn = False
   
   #Player Went Bust
   if player_bust:
@@ -142,6 +145,7 @@ while money != 0:
     print(f"Your Cards: {player_cards}")
     print(f"Dealer's Cards: {dealer_cards}")
     money -= bet
+    print("You went bust!")
     continue
   elif player_blackjack:
     os.system('clear')
@@ -169,6 +173,8 @@ while money != 0:
   print(f"Dealer's Cards: {dealer_cards}")
   
   
+  print(f"Player: {player_value}; Dealer: {dealer_value}")
+
   #Final Checks
   if (dealer_bust):
     print("Dealer went bust")
