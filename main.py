@@ -1,10 +1,9 @@
 import random
-import os
-import math
+from os import system as syst
+import math.ceil as ceil
 
 money = 500
-dealer_cards = []
-player_cards = []
+dealer_cards, player_cards = [], []
 
 
 class Deck(object):
@@ -47,8 +46,6 @@ class Deck(object):
       'king', 'king', 'king', 'king'
       ] #All 52 cards in a deck
   
-deck = Deck()
-
 def get_value(cards:list) -> int:
   value = 0
 
@@ -70,6 +67,8 @@ def get_value(cards:list) -> int:
   return value
 
 
+deck = Deck()
+
 while money != 0:
   player_bust = dealer_bust = player_blackjack = dealer_blackjack = False
   player_turn = hit = first_turn = True
@@ -89,15 +88,16 @@ while money != 0:
   player_cards, dealer_cards = deck.deal()
   player_value = dealer_value = 0
 
-  #Hitting Phase
-  while True:
-    os.system('clear')
-    dealer_cards_visible = ['?', *dealer_cards[1:]]
 
+  #-----------------------------  START OF PLAYERS TURN. -----------------------------#
+
+
+  while True:
+    choice = 0
+    dealer_cards_visible = ['?', *dealer_cards[1:]]
     player_value = get_value(player_cards)
-    print(f"Your Cards: {player_cards}")
-    print(f"Dealer's Cards: {dealer_cards_visible}")
-    
+
+    #Checks if the player is bust, blackjack, or 21
     if player_value == 21 and first_turn:
       player_blackjack = True
       break
@@ -106,17 +106,19 @@ while money != 0:
     elif player_value > 21:
       player_bust = True
       break
-      
+
     if (not player_turn): #player turn is over
       break
-    
-    choice = 0
 
-   #ADD SPLIT LATER
-    if first_turn and money >= bet * 2: #can double down
-      choice = input("Hit(0), Stand(1), Double Down(2): ")
+    syst('clear')
+    print(f"Your Cards: {player_cards}")
+    print(f"Dealer's Cards: {dealer_cards_visible}")
+      
+
+    if first_turn and money >= bet * 2:
+      choice = input("Hit(1), Stand(2), Double Down(3): ")
     else:
-      choice = input("Hit(0), Stand(1): ")
+      choice = input("Hit(1), Stand(2): ")
 
     try:
       choice = int(choice)
@@ -125,37 +127,42 @@ while money != 0:
       choice = 1
 
     first_turn = False
-    if choice == 2:
+
+    if choice == 3: #Double Down
       player_cards.append(deck.get_card())
       bet *= 2
       player_value = get_value(player_cards)
       player_turn = False
-      continue
-    elif choice == 0:
+    elif choice == 1: #hit
       player_cards.append(deck.get_card())
       player_value = get_value(player_cards)
-      continue
     else: #stand
       player_value = get_value(player_cards)
       player_turn = False
+
+
+  #-----------------------------  END OF PLAYERS TURN -----------------------------#
+
   
   #Player Went Bust
   if player_bust:
-    os.system('clear')
+    syst('clear')
     print(f"Your Cards: {player_cards}")
     print(f"Dealer's Cards: {dealer_cards}")
     money -= bet
     print("You went bust!")
     continue
   elif player_blackjack:
-    os.system('clear')
+    syst('clear')
     print(f"Your Cards: {player_cards}")
     print(f"Dealer's Cards: {dealer_cards}")
     print("BlackJack!")
-    money += math.ceil(bet * 1.5)
+    money += ceil(bet * 1.5)
     continue
   
-  #Dealer Phase
+  #-----------------------------  START OF DEALERS TURN  -----------------------------#
+
+
   while True:
     dealer_value = get_value(dealer_cards)
     
@@ -164,30 +171,26 @@ while money != 0:
       break
     elif dealer_value >= 17:
       break
-    
-    dealer_cards.append(deck.get_card())
+    else:
+      dealer_cards.append(deck.get_card())
+
+
+  #-----------------------------  END OF DEALERS TURN. -----------------------------#
     
   
-  os.system('clear')
+  syst('clear')
   print(f"Your Cards: {player_cards}")
   print(f"Dealer's Cards: {dealer_cards}")
-  
-  
-  print(f"Player: {player_value}; Dealer: {dealer_value}")
 
   #Final Checks
   if (dealer_bust):
     print("Dealer went bust")
     money += bet
-    continue
   elif (player_value == dealer_value):
     print("It's a push")
-    continue
   elif (player_value > dealer_value):
     print("You win!")
     money += bet
-    continue
   else:
     print("You lost!")
     money -= bet
-    continue
