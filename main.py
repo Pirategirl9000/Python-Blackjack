@@ -78,6 +78,8 @@ while money != 0:
     bet = input(f"Bet: ")
     try:
       bet = int(bet)
+      if (bet > money):
+        raise ValueError('Not Enough Money')
     except ValueError:
       continue
 
@@ -191,6 +193,9 @@ while money != 0:
   elif (player_value > dealer_value):
     print("You win!")
     money += bet
+  else:
+    print("You lost!")
+    money -= bet
   else:
     print("You lost!")
     money -= bet
