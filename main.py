@@ -7,7 +7,7 @@ dealer_cards, player_cards = [], []
 
 
 class Deck(object):
-  def __init__(self):
+  def __init__(self) -> None:
     self.current_deck = []
     self.shuffle()
     
@@ -16,7 +16,7 @@ class Deck(object):
       raise ValueError("DECK NEEDS SHUFFLED")
     return random.randint(0, len(self.current_deck) - 1)
     
-  def deal(self) -> [list, list]:
+  def deal(self) -> tuple[list, list]:
     cards = []
     
     for i in range(4):
@@ -26,7 +26,7 @@ class Deck(object):
       
     return [cards[0], cards[1]], [cards[2], cards[3]]
     
-  def get_card(self):
+  def get_card(self) -> str | int:
     return self.current_deck.pop(self.__get_card_ind())
 
   def shuffle(self) -> None:
@@ -193,9 +193,6 @@ while money != 0:
   elif (player_value > dealer_value):
     print("You win!")
     money += bet
-  else:
-    print("You lost!")
-    money -= bet
   else:
     print("You lost!")
     money -= bet
