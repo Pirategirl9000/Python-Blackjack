@@ -1,6 +1,6 @@
 import random
 from os import system as syst
-import math.ceil as ceil
+from math import ceil 
 
 money = 500
 dealer_cards, player_cards = [], []
@@ -109,8 +109,7 @@ while money != 0:
       player_bust = True
       break
 
-    if (not player_turn): #player turn is over
-      break
+    if (not player_turn): break
 
     syst('clear')
     print(f"Your Cards: {player_cards}")
@@ -122,23 +121,25 @@ while money != 0:
     else:
       choice = input("Hit(1), Stand(2): ")
 
-    try:
-      choice = int(choice)
+    try: choice = int(choice)
     except ValueError:
       print("INVALID VALUE :: STANDING")
       choice = 1
 
     first_turn = False
 
-    if choice == 3: #Double Down
+    #Double Down
+    if choice == 3:
       player_cards.append(deck.get_card())
       bet *= 2
       player_value = get_value(player_cards)
       player_turn = False
-    elif choice == 1: #hit
+    #Hit
+    elif choice == 1: 
       player_cards.append(deck.get_card())
       player_value = get_value(player_cards)
-    else: #stand
+    #Stand
+    else:
       player_value = get_value(player_cards)
       player_turn = False
 
@@ -146,7 +147,6 @@ while money != 0:
   #-----------------------------  END OF PLAYERS TURN -----------------------------#
 
   
-  #Player Went Bust
   if player_bust:
     syst('clear')
     print(f"Your Cards: {player_cards}")
@@ -173,6 +173,7 @@ while money != 0:
       break
     elif dealer_value >= 17:
       break
+    #Hit
     else:
       dealer_cards.append(deck.get_card())
 
